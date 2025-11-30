@@ -24,3 +24,5 @@
 
 
 W przypadku korzystania z wersji źródłowej, wystarczy uruchomić plik gui.py ze wszystkimi pozostałymi w jednym folderze.
+W teorii możliwe jest skorzystanie z wersji źródłowej na Macu. Wtedy należy skompilować scheduler_core.c do biblioteki dynamicznej w formacie .dylib i umieścić bibliotekę w tym samym folderze.
+Program powinien ją wykryć i działać normalnie (nietestowane).
