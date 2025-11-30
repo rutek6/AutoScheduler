@@ -1,4 +1,5 @@
 ## Funkcje
+- Windows / Linux
 - Wczytywanie planu w formacie HTML z USOSweb  
 - Generowanie wszystkich możliwych planów bez kolizji  
 - Szybkie wykrywanie kolizji (C/DLL)  
@@ -12,7 +13,7 @@
 - Sortowanie planów według jakości
 
 ## Jak korzystać?
-1. Pobierz plik AutoScheduler.exe.
+1. Pobierz plik AutoScheduler.exe (lub AutoScheduler.bin na Linuxie).
 2. Aplikacja wczytuje pliki .html pobrane z USOSa.
    - Na USOSie stwórz nowy plan użytkownika zawierający wszystkie przedmioty, które chcesz umieścić w planie.
    - Wyświetl plan w formacie "Nowy HTML" (domyślny), strona powinna wyświetlić siatkę ze wszystkimi grupami wszystkich przedmiotów.
