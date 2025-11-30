@@ -288,7 +288,10 @@ class TimetableApp(tk.Tk):
         self.plan_index_label.config(text=f"Plan {self.current_index+1} / {len(self.plans)}")
 
     def load_file(self):
-        path = filedialog.askopenfilename(title="Wybierz plik HTML", filetypes=[("HTML files", "*.html;*.htm")])
+        path = filedialog.askopenfilename(title="Wybierz plik HTML", filetypes=[
+        ("HTML files", "*.html *.HTML *.htm *.HTM"),
+        ("All files", "*.*")
+        ])
         if not path:
             return
         for d in range(5):
