@@ -157,9 +157,9 @@ class Scheduler:
                                 break
                                 
                         required = True
-                        req = self.preferences.required_groups or {}
+                        req = self.preferences.required_groups.get(course.name, {})
                         allowed = req.get(course.name, {})      # dict: { "CW-1": 1, "CW-2": 0, ... }
-                        required_keys = [k for k, v in allowed.items() if int(v) == 1]
+                        required_keys = [k for k, v in allowed.items() if int(v) == 1 and k.startswith(group.type)]
                         if required_keys:
                             if group.key not in required_keys:
                                 required = False

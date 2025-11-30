@@ -138,12 +138,12 @@ class PreferencesPanel(tk.LabelFrame):
                 menu = tk.Menu(menubutton, tearoff=False)
                 menubutton.configure(menu=menu)
                 menubutton.grid(row=row, column=2, pady=(10,0), sticky="w")
-                self.choices = {}
+                choices = {}
                 for group in c.groups:
-                    self.choices[group.key] = tk.IntVar(value=0)
-                    menu.add_checkbutton(label=group.key, variable=self.choices[group.key], onvalue=1, offvalue=0)
+                    choices[group.key] = tk.IntVar(value=0)
+                    menu.add_checkbutton(label=group.key, variable=choices[group.key], onvalue=1, offvalue=0)
                 row+=1
-                self.choices_by_course[c.name] = self.choices
+                self.choices_by_course[c.name] = choices
         
         #PROFILE JSON - DO PÓŹNIEJSZEJ IMPLEMENTACJI
         # tk.Button(self, text="Zapisz profil JSON", command=self.save_profile).grid(row=row, column=0, pady=10)
