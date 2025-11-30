@@ -54,10 +54,6 @@ COLORS = [
 #     "#734b8e",  # głęboki fiolet, elegancki
 # ]
 
-
-
-
-
 class PreferencesPanel(tk.LabelFrame):
     def __init__(self, master, weights: Weights, preferences: Preferences, courses, on_apply_callback):
         super().__init__(master, text="Preferencje oceny", padx=10, pady=10)
