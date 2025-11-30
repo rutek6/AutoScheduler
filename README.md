@@ -13,8 +13,13 @@
 
 ## Jak korzystać?
 1. Pobierz plik AutoScheduler.exe.
-2. Po otwarciu aplikacji, wczytaj plan w formacie .html.
-3. Dostosuj wagi preferencji za pomocą suwaków, wybierz preferowane godziny początku i końca zajęć (wpisz godzinę, np "15") oraz preferowane dni wolne.
-4. Jeśli istnieje plan zgodny z preferencjami, wyświetli się siatka godzin.
+2. Aplikacja wczytuje pliki .html pobrane z USOSa.
+   -Na USOSie stwórz nowy plan użytkownika zawierający wszystkie przedmioty, które chcesz umieścić w planie.
+   -Wyświetl plan w formacie "Nowy HTML" (domyślny), strona powinna wyświetlić siatkę ze wszystkimi grupami wszystkich przedmiotów.
+   -Kliknij prawym przyciskiem myszy gdziekolwiek na stronie, wybierz zapisz jako i zapisz plik w formacie czysty .html
+4. Po otwarciu aplikacji, wczytaj plan w formacie .html.
+5. Dostosuj wagi preferencji za pomocą suwaków, wybierz preferowane godziny początku i końca zajęć (wpisz godzinę, np "15") oraz preferowane dni wolne.
+6. Jeśli istnieje plan zgodny z preferencjami, wyświetli się siatka godzin.
 
-W przypadku korzystania z wersji źródłowej, wystarczy uruchomić pliki gui.py ze wszystkimi pozostałymi w jednym folderze.
+
+W przypadku korzystania z wersji źródłowej, wystarczy uruchomić plik gui.py ze wszystkimi pozostałymi w jednym folderze.
