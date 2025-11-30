@@ -1,8 +1,0 @@
-{
-    "weight_conflicts": 10000,
-    "weight_friday_end": 1,
-    "weight_monday_start": 35,
-    "weight_gaps": 1,
-    "weight_late_end": 9999,
-    "weight_days_free": 100
-}
