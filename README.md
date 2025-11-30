@@ -12,4 +12,7 @@
 - 📊 Sortowanie planów według jakości
 
 ## Jak korzystać?
-###1. Pobierz pliki gui.exe
+1. Pobierz plik AutoScheduler.exe.
+2. Po otwarciu aplikacji, wczytaj plan w formacie .html.
+3. Dostosuj wagi preferencji za pomocą suwaków, wybierz preferowane godziny początku i końca zajęć (wpisz godzinę, np "15") oraz preferowane dni wolne.
+4. Jeśli istnieje plan zgodny z preferencjami, wyświetli się siatka godzin.
