@@ -9,8 +9,13 @@ typedef struct
     int end;
 } TimeSlot;
 
-__declspec(dllexport)
-int groups_conflict(
+#if defined(_WIN32) || defined(__CYGWIN__)
+    #define EXPORT __declspec(dllexport)
+#else
+    #define EXPORT __attribute__((visibility("default")))
+#endif
+
+EXPORT int groups_conflict(
     TimeSlot *g1,
     TimeSlot *g2,
     int g1_len,
