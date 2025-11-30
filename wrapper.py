@@ -16,7 +16,28 @@ else:
     # development mode
     base = os.path.dirname(__file__)
 
-dll_path = os.path.join(base, "scheduler_core.dll")
+import platform
+
+# detect which OS we are on
+system = platform.system()
+
+if hasattr(sys, "_MEIPASS"):
+    base = sys._MEIPASS     
+else:
+    base = os.path.dirname(__file__)
+
+if system == "Windows":
+    libname = "scheduler_core.dll"
+elif system == "Linux":
+    libname = "scheduler_core.so"
+elif system == "Darwin":      
+    libname = "scheduler_core.dylib"
+else:
+    raise RuntimeError(f"Unsupported OS: {system}")
+
+dll_path = os.path.join(base, libname)
+
+
 lib = ct.CDLL(dll_path)
 
 lib.groups_conflict.argtypes = [ct.POINTER(CTimeSlot), ct.POINTER(CTimeSlot), ct.c_int, ct.c_int, ct.c_char_p, ct.c_char_p, ct.c_int]
