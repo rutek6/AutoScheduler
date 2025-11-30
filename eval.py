@@ -3,6 +3,41 @@ from typing import List, Dict
 from weights import Weights
 from scheduler import *
 
+def plan_signature(schedule: Schedule):
+        """
+        Zwraca niepowtarzalną sygnaturę opisującą układ planu,
+        ignorując numery grup.
+        """
+        sig = []
+        for cname, group in schedule.selected_groups.items():
+            for s in group.slots:
+                sig.append((s.day, s.start, s.end, cname))
+        # sortujemy aby kolejność dodawania nie miała znaczenia
+        return tuple(sorted(sig))
+
+
+def group_equivalent_plans(plans: list[Schedule]):
+    """
+    Grupuje plany wg ich sygnatur — wykrywa alternatywne kombinacje grup,
+    które dają identyczny układ godzin.
+    """
+    buckets = {}
+    for idx, p in enumerate(plans):
+        sig = plan_signature(p)
+        buckets.setdefault(sig, []).append(idx)
+    return buckets
+
+def diff_plans(base: Schedule, other: Schedule):
+    """Zwraca listę różnic między dwoma planami:
+       [(course_name, group_base.key, group_other.key), ...]
+    """
+    diffs = []
+    for cname, g1 in base.selected_groups.items():
+        g2 = other.selected_groups.get(cname)
+        if g2 and g1.key != g2.key:
+            diffs.append((cname, g1.key, g2.key))
+    return diffs
+
 class Evaluate:
     def __init__(self, plans: List[Schedule]):
         self.plans = plans

@@ -6,7 +6,7 @@ from ttkbootstrap import Style
 from tkinter import filedialog, messagebox
 from parser import parse_html_plan    # parses timetable entries from HTML. See parser.py. :contentReference[oaicite:6]{index=6}
 from scheduler import Scheduler
-from eval import Evaluate            # scoring & conflict detection. See eval.py. :contentReference[oaicite:7]{index=7}
+from eval import Evaluate, group_equivalent_plans, plan_signature, diff_plans      # scoring & conflict detection. See eval.py. :contentReference[oaicite:7]{index=7}
 from models import TimeSlot, Group, Course, Schedule  # datamodels. :contentReference[oaicite:8]{index=8}
 from weights import Weights, Preferences
 
@@ -210,6 +210,7 @@ class TimetableApp(tk.Tk):
         self.preferences = Preferences()
         self.title("Generator planów — Siatka godzinowa")
         self.geometry(f"{CANVAS_WIDTH+40}x{CANVAS_HEIGHT+140}")
+        self.state("zoomed")
         self.style = Style(theme='solar')
         # top controls
         ctrl = tk.Frame(self)
@@ -225,7 +226,8 @@ class TimetableApp(tk.Tk):
             on_apply_callback=self.regenerate_after_preferences
         )
         self.pref_panel.pack()
-        # w = self.load_profile
+
+       # w = self.load_profile
         w = Weights()
 
         tk.Button(ctrl, text="Wczytaj plik HTML...", command=self.load_file).pack(side="left", padx=4)
@@ -240,14 +242,29 @@ class TimetableApp(tk.Tk):
         tk.Button(nav, text="Następny >>", command=self.next_plan).pack(side="left", padx=4)
         self.plan_index_label = tk.Label(nav, text="Plan 0 / 0")
         self.plan_index_label.pack(side="left", padx=8)
-
         
         self.canvas = tk.Canvas(self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, bg="white")
         self.canvas.pack(padx=10, pady=6)
 
-       
-        self.details = tk.Text(self, height=6)
-        self.details.pack(fill="x", padx=10, pady=(0,10))
+        self.bottom_panel = tk.Frame(self)
+        self.bottom_panel.pack(fill="x", padx=10, pady=(10,10))
+
+        # LEWA KOLUMNA — SZCZEGÓŁY KLIKNIĘĆ
+        self.details_frame = tk.LabelFrame(self.bottom_panel, text="Szczegóły zajęć", padx=10, pady=10)
+        self.details_frame.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
+
+        self.details = tk.Text(self.details_frame, height=12)
+        self.details.pack(fill="both", expand=True)
+
+        # PRAWA KOLUMNA — ALTERNATYWY PLANU
+        self.alternatives_frame = tk.LabelFrame(self.bottom_panel, text="Alternatywy planu", padx=10, pady=10)
+        self.alternatives_frame.grid(row=0, column=1, sticky="nsew")
+
+        self.alternatives_text = tk.Text(self.alternatives_frame, height=12)
+        self.alternatives_text.pack(fill="both", expand=True)
+        
+        self.bottom_panel.columnconfigure(0, weight=1)
+        self.bottom_panel.columnconfigure(1, weight=5)
 
         self.plans = []           
         self.sorted_plans = []
@@ -275,6 +292,8 @@ class TimetableApp(tk.Tk):
 
         self.plans = plans
         self.current_index = 0
+        self.equivalence = group_equivalent_plans(self.plans)
+        self.update_alternatives_panel()
         self.draw_current_plan()
         self.plan_index_label.config(text=f"Plan {self.current_index+1} / {len(self.plans)}")
 
@@ -339,9 +358,12 @@ class TimetableApp(tk.Tk):
         w = self.profile
         evaluator = Evaluate(plans)
         evaluator.sort_plans(plans, w)   
+        
 
         self.plans = plans
         self.current_index = 0
+        self.equivalence = group_equivalent_plans(self.plans)
+        self.update_alternatives_panel()
 
         if plans:
             min_start = min((slot.start for p in plans for g in p.selected_groups.values() for slot in g.slots), default=self.start_hour*60)
@@ -371,6 +393,7 @@ class TimetableApp(tk.Tk):
         self.current_index = max(0, self.current_index - 1)
         self.plan_index_label.config(text=f"Plan {self.current_index+1} / {len(self.plans)}")
         self.draw_current_plan()
+        self.update_alternatives_panel()
 
     def next_plan(self):
         if not self.plans:
@@ -378,6 +401,7 @@ class TimetableApp(tk.Tk):
         self.current_index = min(len(self.plans)-1, self.current_index + 1)
         self.plan_index_label.config(text=f"Plan {self.current_index+1} / {len(self.plans)}")
         self.draw_current_plan()
+        self.update_alternatives_panel()
 
     def _assign_columns(self, events):
         events.sort(key=lambda e: (e['slot'].start, e['slot'].end))
@@ -624,6 +648,31 @@ class TimetableApp(tk.Tk):
         for s in grp.slots:
             self.details.insert(tk.END, f" - {DAY_NAMES[s.day]} {self._time_str(s.start)}-{self._time_str(s.end)}\n")
 
+    def update_alternatives_panel(self):
+        self.alternatives_text.delete(1.0, tk.END)
+
+        if not self.plans:
+            return
+
+        current_plan = self.plans[self.current_index]
+        sig = plan_signature(current_plan)
+        eq_idx = self.equivalence.get(sig, [])
+        alternatives = [i for i in eq_idx if i != self.current_index]
+
+        if not alternatives:
+            self.alternatives_text.insert(tk.END, "Brak alternatywnych kombinacji.")
+            return
+
+        self.alternatives_text.insert(tk.END, "Alternatywy dla tego planu:\n")
+
+        for alt_idx in alternatives:
+            other = self.plans[alt_idx]
+            diffs = diff_plans(current_plan, other)
+
+            if diffs:
+                self.alternatives_text.insert(tk.END, f" - Plan {alt_idx+1}: \n")
+                parts = [f"\t{c}: \n\t\t {g1} → {g2}\n" for c, g1, g2 in diffs]
+                self.alternatives_text.insert(tk.END, " ".join(parts) + "\n")
 
 if __name__ == "__main__":
     app = TimetableApp()
