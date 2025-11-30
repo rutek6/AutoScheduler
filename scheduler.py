@@ -155,12 +155,33 @@ class Scheduler:
                                     break
                             if dead:
                                 break
-                        if not dead:
+                                
+                        required = True
+                        req = self.preferences.required_groups or {}
+                        allowed = req.get(course.name, {})      # dict: { "CW-1": 1, "CW-2": 0, ... }
+                        required_keys = [k for k, v in allowed.items() if int(v) == 1]
+                        if required_keys:
+                            if group.key not in required_keys:
+                                required = False
+                        fit = True
+                        for slots in group.slots:
+                                if self.weights.end[slots.day] is not None and slots.end > self.weights.end[slots.day]*60:
+                                    fit = False
+                                    break
+                                if self.weights.start[slots.day] is not None and slots.start < self.weights.start[slots.day]*60:
+                                    fit = False
+                                    break
+                                if self.preferences.free_days[slots.day] == 1:
+                                    fit = False
+                                    break
+
+                        if fit and required and not dead:
                             plan[f"{course.name}-{t}"] = group
                             dfs_group_type(type_index + 1)
                             del plan[f"{course.name}-{t}"]
                         rollback(removed)
                     return
+
                 for group in grouped[t]:
                     gid = group._id
                     if plan_has_conflict(group):
