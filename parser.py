@@ -94,7 +94,13 @@ def parse_html_plan(path):
         if m_end:
             h1, m1, h2, m2 = map(int, m_end.groups())
             end_minutes = h2 * 60 + m2
-    
+        if "nieparzyste" in text:
+            week = 1
+        elif "parzyste" in text:
+            week = 2
+        else:
+            week = 0
+            
         #DAY
         
         parent_day = e.find_parent("timetable-day")
@@ -125,7 +131,7 @@ def parse_html_plan(path):
 
         # dodajemy slot do tej grupy (nawet jeśli jest wiele slotów tego samego dnia)
         courses[course_name][group_key].append(
-            TimeSlot(day, start_minutes, end_minutes)
+            TimeSlot(day, start_minutes, end_minutes, week)
         )
         people[course_name][group_key] = text
     # --- 6. KONWERSJA DO OBIEKTÓW Course/Group ---

@@ -7,6 +7,7 @@ class CTimeSlot(ct.Structure):
         ("day", ct.c_int),
         ("start", ct.c_int),
         ("end", ct.c_int),
+        ("week", ct.c_int)
     ]
 
 if hasattr(sys, "_MEIPASS"):
@@ -45,7 +46,7 @@ lib.groups_conflict.restype = ct.c_int
 
 def prepare_group_c(group: Group):
         group.c_slots = (CTimeSlot * len(group.slots))(
-            *[CTimeSlot(s.day, s.start, s.end) for s in group.slots]
+            *[CTimeSlot(s.day, s.start, s.end, s.week) for s in group.slots]
         )
         group.c_slot_count = len(group.slots)
         group.c_type = group.type.encode("ascii")

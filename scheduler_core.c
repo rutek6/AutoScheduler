@@ -7,6 +7,7 @@ typedef struct
     int day;
     int start;
     int end;
+    int week;
 } TimeSlot;
 
 #if defined(_WIN32) || defined(__CYGWIN__)
@@ -31,7 +32,7 @@ EXPORT int groups_conflict(
     {
         for(int j = 0; j < g2_len; j++)
         {
-            if(g1[i].day == g2[j].day)
+            if(g1[i].day == g2[j].day && ((g1[i].week == g2[j].week) || (g1[i].week == 0 || g2[j].week == 0)))
             {
                 if(!(g1[i].end <= g2[j].start || g2[j].end <= g1[i].start)) 
                     if(wyklad)

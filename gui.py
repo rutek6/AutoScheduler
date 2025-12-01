@@ -539,7 +539,10 @@ class TimetableApp(tk.Tk):
                     f"{group.key}\n"
                     f"{self._time_str(slot.start)}-{self._time_str(slot.end)}"
                 )
-
+                if slot.week == 1:
+                    raw_label += "\nTygodnie nieparzyste\n"
+                elif slot.week == 2:
+                    raw_label += "\nTygodnie parzyste\n"
                 # zmierz wysokość etykiety
                 tid = self.canvas.create_text(0, 0, text=raw_label, anchor="nw", font=("TkDefaultFont", 9))
                 bbox = self.canvas.bbox(tid)
@@ -639,6 +642,10 @@ class TimetableApp(tk.Tk):
         self.details.insert(tk.END, f"Kurs: {clicked['course']}\n")
         self.details.insert(tk.END, f"Grupa: {grp.key}\n")
         self.details.insert(tk.END, f"Dzień: {DAY_NAMES[slot.day]} ({slot.day})\n")
+        if slot.week == 1:
+            self.details.insert(tk.END, "Tygodnie nieparzyste\n")
+        elif slot.week == 2:
+            self.details.insert(tk.END, "Tygodnie parzyste\n")
         self.details.insert(tk.END, f"Czas: {self._time_str(slot.start)} - {self._time_str(slot.end)}\n")
         self.details.insert(tk.END, f"Prowadzący: {grp.person}\n")
         self.details.insert(tk.END, "\nWszystkie sloty tej grupy:\n")

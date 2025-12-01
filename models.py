@@ -6,6 +6,7 @@ class TimeSlot:
     day: int #0 - Pon, 6 - Niedz
     start: int
     end: int
+    week: int #0 - każdy tydzień, 1 - nieparzyste, 2 - parzyste
 
 @dataclass
 class Group:
