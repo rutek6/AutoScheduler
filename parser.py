@@ -20,7 +20,8 @@ def parse_html_plan(path):
 
     # course_name → (group_name → list[TimeSlot])
     courses = {}
-
+    # course_name → (group_name → person)
+    people = {}
     for e in entries:
 
         # --- 1. NAZWA KURSU ---
@@ -102,7 +103,12 @@ def parse_html_plan(path):
             if h4:
                 dname = h4.get_text(" ", strip=True).lower()
                 day = DAY_MAP.get(dname)
-            
+        
+        person = e.find("div", {"slot": "dialog-person"})
+        if person:
+            text = person.get_text()
+            text = text.split(",")[0]
+            text = text.strip()
             
             
         
@@ -110,20 +116,23 @@ def parse_html_plan(path):
         # --- 5. SCALANIE GRUP ---
         if course_name not in courses:
             courses[course_name] = {}
-
+        if course_name not in people:
+            people[course_name] = {}
         if group_key not in courses[course_name]:
             courses[course_name][group_key] = []
+        if group_key not in people[course_name]:
+            people[course_name][group_key] = " "
 
         # dodajemy slot do tej grupy (nawet jeśli jest wiele slotów tego samego dnia)
         courses[course_name][group_key].append(
             TimeSlot(day, start_minutes, end_minutes)
         )
-
+        people[course_name][group_key] = text
     # --- 6. KONWERSJA DO OBIEKTÓW Course/Group ---
     result = []
     for cname, groups in courses.items():
         group_objs = [
-            Group(gkey, slots)
+            Group(gkey, slots, people[cname][gkey])
             for gkey, slots in groups.items()
         ]
         result.append(Course(cname, group_objs))

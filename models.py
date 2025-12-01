@@ -11,6 +11,7 @@ class TimeSlot:
 class Group:
     key: str
     slots: List[TimeSlot]
+    person: str
 
     @property
     def type(self):

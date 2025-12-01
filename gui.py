@@ -640,6 +640,7 @@ class TimetableApp(tk.Tk):
         self.details.insert(tk.END, f"Grupa: {grp.key}\n")
         self.details.insert(tk.END, f"Dzień: {DAY_NAMES[slot.day]} ({slot.day})\n")
         self.details.insert(tk.END, f"Czas: {self._time_str(slot.start)} - {self._time_str(slot.end)}\n")
+        self.details.insert(tk.END, f"Prowadzący: {grp.person}\n")
         self.details.insert(tk.END, "\nWszystkie sloty tej grupy:\n")
         for s in grp.slots:
             self.details.insert(tk.END, f" - {DAY_NAMES[s.day]} {self._time_str(s.start)}-{self._time_str(s.end)}\n")
